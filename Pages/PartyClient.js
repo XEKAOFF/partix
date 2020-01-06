@@ -21,18 +21,6 @@ class PartyClient extends Component {
       connected: true
     })
 
-    socket.on('login', data => {
-      console.log("LOGIN("+Device.deviceName+")" + data.username)
-    })
-
-    socket.on('user left', data => {
-      console.log("LEFT("+Device.deviceName+")" + data.username)
-    })
-
-    socket.on('user join', data => {
-      console.log("JOIN("+Device.deviceName+")" + data.username)
-    })
-
     socket.emit('add user', {
       username: Device.deviceName
     })
