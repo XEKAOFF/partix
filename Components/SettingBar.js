@@ -23,7 +23,7 @@ export default class SettingBar extends Component {
             'Do you really want to leave this party ?',
             [
               {text: 'Yes sure !', 
-              onPress: () => this.goToMenu.bind(this),
+              onPress: () => this.props.bind(this.props.onClick),
               style:'destructive'},
               {
                 text: 'No !',
@@ -33,10 +33,6 @@ export default class SettingBar extends Component {
             ],
             {cancelable: true},
           );
-    }
-    goToMenu(){
-        console.log('menu');
-        this.props.navigation.navigate('PartyPage');
     }
 }
 

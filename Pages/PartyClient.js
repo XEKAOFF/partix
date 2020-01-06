@@ -8,39 +8,66 @@ import {connect} from 'react-redux'
 import { NavigationEvents } from 'react-navigation';
 import socketIOClient from "socket.io-client";
 import * as Device from "expo-device";
+// import { genid } from "../utils";
 
 class PartyClient extends Component {
 
-  state = {
-    connected: false
+  constructor(props) {
+    super(props);
+
+    const {dispatch} = this.props
+    socket = null;
   }
-
+  
+  state = {
+    connected: false,
+  }
+  
   connectToBackend() {
-    const socket = socketIOClient("http://173.212.236.123:8888", {forceNode: true})
+    console.log("connectToBackend")
+    let tmpid = Math.floor(Math.random() * 1000000).toString();
+    this.socket = socketIOClient("http://173.212.236.123:8888", {forceNode: true})
+    this.props.socketConnect(tmpid)
+
     this.setState({
-      connected: true
+      connected: true,
+      id: tmpid
     })
+    // console.log(id)
+    // console.log(id)
+    // socket.on('login', data => {
+    //   console.log("LOGIN("+Device.deviceName+")" + data.username)
+    // })
 
-    socket.on('login', data => {
-      console.log("LOGIN("+Device.deviceName+")" + data.username)
-    })
-
-    socket.on('user left', data => {
+    this.socket.on('user left', data => {
       console.log("LEFT("+Device.deviceName+")" + data.username)
     })
 
-    socket.on('user join', data => {
+    this.socket.on('user join', data => {
       console.log("JOIN("+Device.deviceName+")" + data.username)
     })
 
-    socket.emit('add user', {
-      username: Device.deviceName
+    this.socket.emit('add user', {
+      username: tmpid
     })
+
+    this.props.userJoin(tmpid);
     
     // socket.on("general", msg => {
     //   console.log(msg);
     // });
   };
+
+  disconnectBackend() {
+    console.log("disconnectBackend")
+    this.socket.disconnect();
+    console.log(this.props.socketUserId)
+    this.props.userLeft(this.props.socketUserId);
+    console.log(this.props.connectedUsers)
+    this.setState({
+      connected: false
+    })
+  }
     
   render(){
     return (
@@ -52,7 +79,7 @@ class PartyClient extends Component {
 
         {/* ======================TopPart (Playlist Queue)================ */}
         <View style={[styles.header,styles.shadow]}>
-          <Text style={styles.currentMusic}>{this.props.title}</Text>
+          <Text style={styles.currentMusic}>{this.id}</Text>
           <AudioWave color='#EE4540' style={styles.waveform} playing={this.props.isPlaying}></AudioWave>
           <RateBar style={styles.rateBar} likes={this.props.likes} dislikes={this.props.dislikes}></RateBar>
         </View>
@@ -84,7 +111,9 @@ class PartyClient extends Component {
           {/* Bouton d'ajout a la playlist */}
           {!this.state.connected ?
           <TouchableOpacity onPress={this.connectToBackend.bind(this)} style={styles.addBtn}><MaterialCommunityIcons name="satellite-variant" size={16} style={styles.addBtnTxt} /></TouchableOpacity>
-          : null }
+          :
+          <TouchableOpacity onPress={this.disconnectBackend.bind(this)} style={styles.addBtn}><MaterialCommunityIcons name="close-network" size={16} style={styles.addBtnTxt} /></TouchableOpacity>
+          }
          </View>
          
        </View>
@@ -97,11 +126,21 @@ const mapStateToProps = state => {
     isPlaying: state.isPlaying,
     title: state.title,
     likes: state.likes,
-    dislikes: state.dislikes
+    dislikes: state.dislikes,
+    connectedUsers: state.connectedUsers,
+    socketUserId: state.socketUserId
   }
 }
 
-export default connect(mapStateToProps, null)(PartyClient)
+const mapDispatchToProps = dispatch => {
+  return {
+    socketConnect: (userId) => dispatch({ type: 'SOCKET_CONNECT', userId }),
+    userJoin: (user) => dispatch({ type: 'SOCKET_USER_JOIN', user }),
+    userLeft: (user) => dispatch({ type: 'SOCKET_USER_LEFT', user })
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PartyClient)
 
 const styles = StyleSheet.create({
   shadow:{

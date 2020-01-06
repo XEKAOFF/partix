@@ -17,7 +17,9 @@ const initialState = {
   dislikes:9,
   liked:false,
   disliked:false,
-  userToken: null
+  userToken: null,
+  socketUserId: null,
+  connectedUsers: []
 };
 
 const reducer = (state = initialState, action) => {
@@ -46,6 +48,21 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         isPlaying: !state.isPlaying
+      }
+    case 'SOCKET_CONNECT':
+      return {
+        ...state,
+        socketUserId: action.userId
+      }
+    case 'SOCKET_USER_JOIN':
+      return {
+        ...state,
+        connectedUsers: [...state.connectedUsers, action.user]
+      }
+    case 'SOCKET_USER_LEFT':
+      return {
+        ...state,
+        connectedUsers: state.connectedUsers.filter(item => item !== action.user)
       }
     default:
       return state
