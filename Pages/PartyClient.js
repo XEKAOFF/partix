@@ -16,7 +16,7 @@ class PartyClient extends Component {
     super(props);
 
     const {dispatch} = this.props
-    socket = null;
+    this.socket = null;
   }
   
   state = {
@@ -39,12 +39,24 @@ class PartyClient extends Component {
     //   console.log("LOGIN("+Device.deviceName+")" + data.username)
     // })
 
+    this.socket.on('user list', data => {
+        if (!Array.isArray(data.users) || data.users === undefined || data.users.length == 0) {    
+            console.log("no users")
+            return;
+        }
+        data.users.forEach(e => {
+            this.props.userJoin(e)
+        });
+    })
+
     this.socket.on('user left', data => {
       console.log("LEFT("+Device.deviceName+")" + data.username)
+      this.props.userLeft(data.username);
     })
 
     this.socket.on('user join', data => {
       console.log("JOIN("+Device.deviceName+")" + data.username)
+      this.props.userJoin(data.username);
     })
 
     this.socket.emit('add user', {
@@ -61,9 +73,8 @@ class PartyClient extends Component {
   disconnectBackend() {
     console.log("disconnectBackend")
     this.socket.disconnect();
-    console.log(this.props.socketUserId)
+    this.props.socketDisconnect();
     this.props.userLeft(this.props.socketUserId);
-    console.log(this.props.connectedUsers)
     this.setState({
       connected: false
     })
@@ -135,6 +146,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     socketConnect: (userId) => dispatch({ type: 'SOCKET_CONNECT', userId }),
+    socketDisconnect: () => dispatch({ type: 'SOCKET_DISCONNECT' }),
     userJoin: (user) => dispatch({ type: 'SOCKET_USER_JOIN', user }),
     userLeft: (user) => dispatch({ type: 'SOCKET_USER_LEFT', user })
   }

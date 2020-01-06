@@ -54,6 +54,11 @@ const reducer = (state = initialState, action) => {
         ...state,
         socketUserId: action.userId
       }
+    case 'SOCKET_DISCONNECT':
+      return {
+        ...state,
+        connectedUsers: []
+      }
     case 'SOCKET_USER_JOIN':
       return {
         ...state,
