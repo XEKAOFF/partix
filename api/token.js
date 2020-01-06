@@ -1,16 +1,17 @@
-  
-const apiPrefix = 'https://accounts.spotify.com/api';
-const base64credentials = 'YWE3NGNjZTQ5Njk0NDZmNThhMzE0MzVmOGQwOGExYTM6YzEyNGY2MjIyZWNkNGY4MmI0ZDZmMjQxNDA5MzdkZjk=';
+const endpoint = 'http://173.212.236.123:8888/api/getSpotifyAccessToken';
 
 export default async ({code, uri}) => {
   console.log('token begin');
-  const res = await fetch(`${apiPrefix}/token`, {
+  var payload = {
+      code: code,
+      uri: uri
+  }
+  const res = await fetch(`${endpoint}`, {
     method: 'POST',
     headers: {
-      Authorization: `Basic ${base64credentials}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': 'application/json',
     },
-    body: `grant_type=authorization_code&code=${code}&redirect_uri=${uri}`,
+    body: JSON.stringify(payload),
   });
   const json = await res.json();
   const newToken = json.access_token;
