@@ -21,6 +21,9 @@ class PartyClient extends Component {
       connected: true
     })
 
+    socket.on('loged in', data => {
+      console.log("LOGIN("+Device.deviceName+")" + data.username)
+    })
     socket.emit('add user', {
       username: Device.deviceName
     })
