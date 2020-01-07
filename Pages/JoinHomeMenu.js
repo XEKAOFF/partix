@@ -5,7 +5,38 @@ import AudioWave from "../Components/Audiowave";
 import RateBar from "../Components/RateBar";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
 
-export default class JoinHomeMenu extends Component {  
+export default class JoinHomeMenu extends Component {
+  state = {
+    partyText: "",
+    username: "",
+    loading: false
+  }
+
+  updateText(text) {
+    this.setState({
+      partyText: text
+    })
+  }
+
+  updateUsername(text) {
+    this.setState({
+      username: text
+    })
+  }
+
+  joinParty() {
+    this.setState({
+      loading: true
+    })
+  }
+
+  createParty() {
+    this.setState({
+      loading: true
+    })
+    //console.log(this.state.partyText + " - " + this.state.username)
+  }
+
   render(){
     return (
     
@@ -19,15 +50,23 @@ export default class JoinHomeMenu extends Component {
           </View>
         <StatusBar barStyle="dark-content" />
         <View style={styles.header}>
-            <Text style={styles.appTitle}>Partix</Text>
+            <Text style={styles.appTitle}>{this.state.partyText}</Text>
         </View>
         <View style={styles.middleSlot}>
-            <TextInput placeholderTextColor='grey' placeholder='Username' style={styles.field}></TextInput>
+            <TextInput onChangeText={newtext => this.updateUsername(newtext)} placeholderTextColor='grey' placeholder='Username' style={styles.field}></TextInput>
         </View>
-        <View style={{alignItems: 'center'}}>
-            <TouchableOpacity style={styles.menuBtn}><Text style={styles.menuBtnText}>Create a party</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.menuBtn}><Text style={styles.menuBtnText}>Join a party</Text></TouchableOpacity>
+        { !this.state.loading ?
+        <View style={{flex: 0.7, justifyContent:'space-evenly',alignItems: 'center'}}>
+          <TextInput onChangeText={newtext => this.updateText(newtext)} placeholderTextColor='grey' placeholder='Party Name' style={styles.partyfield}></TextInput>
+          <View style={styles.inputBtnContainer}>
+            <TouchableOpacity onPress={this.createParty.bind(this)} disabled={(this.state.partyText.length < 3 || this.state.username.length < 3)} style={(this.state.partyText.length < 3  || this.state.username.length < 3) ? {...styles.menuBtn, ...styles.buttonDisabled} : styles.menuBtn}><Text style={styles.menuBtnText}>Create</Text></TouchableOpacity>
+            <TouchableOpacity onPress={this.joinParty.bind(this)} disabled={(this.state.partyText.length < 3  || this.state.username.length < 3)} style={(this.state.partyText.length < 3  || this.state.username.length < 3) ? {...styles.menuBtn, ...styles.buttonDisabled} : styles.menuBtn}><Text style={styles.menuBtnText}>Join</Text></TouchableOpacity>
+          </View>
+        </View> :
+        <View>
+          <Text>Loading</Text>
         </View>
+        }
        </View>
     );
   }
@@ -36,7 +75,41 @@ export default class JoinHomeMenu extends Component {
 }
 
 const styles = StyleSheet.create({
- 
+  inputBtnContainer: {
+    //backgroundColor: 'red',
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
+    width: '80%',
+    justifyContent: 'space-between'
+  },
+  partyfield: {
+    //backgroundColor: 'blue',
+    height: 50,
+    width: '80%',
+    borderColor: 'black',
+    borderRadius: 30,
+    borderWidth: 3,
+    textAlign: 'center',
+    fontSize: 20
+  },
+  menuBtn:{
+    width: '40%',
+    height: 45,
+    backgroundColor: '#333',
+    borderColor: 'black',
+    borderRadius: 30,
+    borderWidth: 3,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  menuBtnText:{
+      color: '#ccc',
+      fontSize: 20,
+  },
+  buttonDisabled: {
+    borderColor: '#999',
+    backgroundColor: '#aaa'
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',
@@ -87,7 +160,7 @@ const styles = StyleSheet.create({
     },
     field: {
         width: '80%',
-        height: 40,
+        height: 50,
         borderRadius: 25,
         borderWidth: 3,
         shadowColor: 'black',
@@ -95,22 +168,9 @@ const styles = StyleSheet.create({
         borderColor: 'white',
         fontSize: 20,
         textAlign: 'center',
+        color: 'white'
         // borderColor: 'red',
         // borderWidth: 2
-    },
-    menuBtn:{
-        borderColor: 'black',
-        width: 250,
-        height: 45,
-        borderRadius: 30,
-        borderWidth: 5,
-        marginTop: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    menuBtnText:{
-        color: 'grey',
-        fontSize: 20,
     },
 
 
