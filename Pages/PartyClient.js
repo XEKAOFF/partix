@@ -11,75 +11,6 @@ import * as Device from "expo-device";
 // import { genid } from "../utils";
 
 class PartyClient extends Component {
-
-  constructor(props) {
-    super(props);
-
-    const {dispatch} = this.props
-    this.socket = null;
-  }
-  
-  state = {
-    connected: false,
-  }
-  
-  connectToBackend() {
-    // console.log("\u001b[1;31m Red message");
-    /*console.log("connectToBackend")
-    let tmpid = Math.floor(Math.random() * 1000000).toString();
-    this.socket = socketIOClient("http://173.212.236.123:8888", {forceNode: true})
-    this.props.socketConnect(tmpid)
-
-    this.setState({
-      connected: true,
-      id: tmpid
-    })
-    // console.log(id)
-    // console.log(id)
-    // socket.on('login', data => {
-    //   console.log("LOGIN("+Device.deviceName+")" + data.username)
-    // })
-
-    this.socket.on('user list', data => {
-        if (!Array.isArray(data.users) || data.users === undefined || data.users.length == 0) {    
-            console.log("no users")
-            return;
-        }
-        data.users.forEach(e => {
-            this.props.userJoin(e)
-        });
-    })
-
-    this.socket.on('user left', data => {
-      console.log("LEFT("+Device.deviceName+")" + data.username)
-      this.props.userLeft(data.username);
-    })
-
-    this.socket.on('user join', data => {
-      console.log("JOIN("+Device.deviceName+")" + data.username)
-      this.props.userJoin(data.username);
-    })
-
-    this.socket.emit('add user', {
-      username: tmpid
-    })
-
-    this.props.userJoin(tmpid);
-    
-    // socket.on("general", msg => {
-    //   console.log(msg);
-    // });
-  };
-
-  disconnectBackend() {
-    console.log("disconnectBackend")
-    this.socket.disconnect();
-    this.props.socketDisconnect();
-    this.props.userLeft(this.props.socketUserId);
-    this.setState({
-      connected: false
-    })*/
-  }
     
   render(){
     return (
@@ -91,7 +22,7 @@ class PartyClient extends Component {
 
         {/* ======================TopPart (Playlist Queue)================ */}
         <View style={[styles.header,styles.shadow]}>
-          <Text style={styles.currentMusic}>{this.id}</Text>
+          <Text style={styles.currentMusic}>{this.props.title}</Text>
           <AudioWave color='#EE4540' style={styles.waveform} playing={this.props.isPlaying}></AudioWave>
           <RateBar style={styles.rateBar} likes={this.props.likes} dislikes={this.props.dislikes}></RateBar>
         </View>
@@ -119,13 +50,6 @@ class PartyClient extends Component {
             <PlayListElement songName='Lets Do it' songArtist='11 Acorn Lane' mixerName='Someone'></PlayListElement>
             <PlayListElement songName='Dies Irae' songArtist='Apashe' mixerName='Anonymous'></PlayListElement>
           </ScrollView>
-          
-          {/* Bouton d'ajout a la playlist */}
-          {!this.state.connected ?
-          <TouchableOpacity onPress={this.connectToBackend.bind(this)} style={styles.addBtn}><MaterialCommunityIcons name="satellite-variant" size={16} style={styles.addBtnTxt} /></TouchableOpacity>
-          :
-          <TouchableOpacity onPress={this.disconnectBackend.bind(this)} style={styles.addBtn}><MaterialCommunityIcons name="close-network" size={16} style={styles.addBtnTxt} /></TouchableOpacity>
-          }
          </View>
          
        </View>
@@ -139,21 +63,11 @@ const mapStateToProps = state => {
     title: state.title,
     likes: state.likes,
     dislikes: state.dislikes,
-    connectedUsers: state.connectedUsers,
-    socketUserId: state.socketUserId
+    connectedUsers: state.connectedUsers
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    socketConnect: (userId) => dispatch({ type: 'SOCKET_CONNECT', userId }),
-    socketDisconnect: () => dispatch({ type: 'SOCKET_DISCONNECT' }),
-    userJoin: (user) => dispatch({ type: 'SOCKET_USER_JOIN', user }),
-    userLeft: (user) => dispatch({ type: 'SOCKET_USER_LEFT', user })
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PartyClient)
+export default connect(mapStateToProps, null)(PartyClient)
 
 const styles = StyleSheet.create({
   shadow:{

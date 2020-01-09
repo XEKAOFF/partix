@@ -33,7 +33,7 @@ class JoinHomeMenu extends Component {
   }
     
   createParty() {
-    this.props.socketConnect(this.state.username);
+    this.props.socketConnect({user: this.state.username, room: this.state.partyText});
     // this.setState({
     //   loading: true
     // })
@@ -90,7 +90,7 @@ class JoinHomeMenu extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    socketConnect: (user) => dispatch({ type: 'S_CONNECT', user }),
+    socketConnect: (data) => dispatch({ type: 'S_CONNECT', data }),
     socketDisconnect: () => dispatch({ type: 'S_DISCONNECT' }),
     // userJoin: (user) => dispatch({ type: 'SOCKET_USER_JOIN', user }),
     // userLeft: (user) => dispatch({ type: 'SOCKET_USER_LEFT', user })

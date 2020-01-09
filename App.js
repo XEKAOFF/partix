@@ -20,91 +20,85 @@ const initialState = {
   liked:false,
   disliked:false,
   userToken: null,
-  socketUserId: null,
   connectedUsers: []
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'NEW_SONG':
-      return {
-        ...state,
-          title: action.title
-      }
+        return {
+            ...state,
+            title: action.title
+        }
     case 'CONNECT':
-      return {
-        ...state,
-        userToken: action.userToken
-      }
+        return {
+            ...state,
+            userToken: action.userToken
+        }
     case 'LIKE':
-      return {
-        ...state,
-          likes: action.likes
-      }
+        return {
+            ...state,
+            likes: action.likes
+        }
     case 'DISLIKE':
-      return {
-        ...state,
-          dislikes: action.dislikes
-      }
+        return {
+            ...state,
+            dislikes: action.dislikes
+        }
     case 'TOGGLE_PLAY':
-      return {
-        ...state,
-        isPlaying: !state.isPlaying
-      }
-    case 'SOCKET_CONNECT':
-      return {
-        ...state,
-        socketUserId: action.userId
-      }
-    case 'SOCKET_DISCONNECT':
-      return {
-        ...state,
-        connectedUsers: []
-      }
+        return {
+            ...state,
+            isPlaying: !state.isPlaying
+        }
+    case 'S_DISCONNECT':
+        return {
+            ...state,
+            connectedUsers: []
+        }
     case 'SOCKET_USER_JOIN':
-      return {
-        ...state,
-        connectedUsers: [...state.connectedUsers, action.user]
-      }
+        return {
+            ...state,
+            connectedUsers: [...state.connectedUsers, action.user]
+        }
     case 'SOCKET_USER_LEFT':
-      return {
-        ...state,
-        connectedUsers: state.connectedUsers.filter(item => item !== action.user)
-      }
+        return {
+            ...state,
+            connectedUsers: state.connectedUsers.filter(item => item !== action.user)
+        }
     default:
-      return state
+        return state
   }
 };
 
 const store = createStore(reducer, applyMiddleware(socketMiddleware));
 
 export default class App extends React.Component {
-  static navigationOptions = {
-      header: null
-  }
-  render() {
-    
-    return (
-      <Provider store={store}>
-        <StackNav />
+    static navigationOptions = {
+        header: null
+    }
+    render() {
         
-      </Provider>
-    );
-  }
+    return (
+        <Provider store={store}>
+            <StackNav />
+            
+        </Provider>
+        );
+    }
 }
 const AppNavigator = createStackNavigator({
-  Tabs:{
-    screen: TabNavig,
-    navigationOptions: {
-      headerShown: false,
-    }
-  },
-  Home: {
-    screen: JoinHomeMenu,
-    navigationOptions: {
-      headerShown: false,
-    }
-  },
+    Tabs:{
+            screen: TabNavig,
+            navigationOptions: {
+            headerShown: false,
+        }
+    },
+    Home: {
+            screen: JoinHomeMenu,
+            navigationOptions: {
+            headerShown: false,
+        }
+    },
 });
 
 const StackNav = createAppContainer(AppNavigator);

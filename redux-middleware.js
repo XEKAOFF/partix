@@ -36,6 +36,7 @@ const socketMiddleware = () => {
                 console.error('Socket Error: no username provided')
                 break
             }
+            let user = action.data.user
             if (socket !== null) {
                 socket.close()
             }
@@ -46,8 +47,12 @@ const socketMiddleware = () => {
             initSocketHandlers(store, socket)
 
             socket.emit('add user', {
-                username: action.user
+                username: user
             })
+
+            socket.emit('join', action.data.room)
+            
+            store.dispatch({ type: 'SOCKET_USER_JOIN', user })
             // // websocket handlers
             // socket.onmessage = onMessage(store)
             // socket.onclose = onClose(store)
@@ -60,9 +65,9 @@ const socketMiddleware = () => {
             }
             socket = null
             console.log('[SOCKET] (-)')
-            break
+            return next(action)
         default:
-            console.log('the next action:', action)
+            console.log('the next action:', action.type)
             return next(action)
         }
     }
