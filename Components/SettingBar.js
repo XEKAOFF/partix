@@ -23,7 +23,7 @@ export default class SettingBar extends Component {
             'Do you really want to leave this party ?',
             [
               {text: 'Yes sure !', 
-              onPress: () => this.props.bind(this.props.onClick),
+              onPress: () => this.screenProps.navigation.navigate('PartyPage'),
               style:'destructive'},
               {
                 text: 'No !',

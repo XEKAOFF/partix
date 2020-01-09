@@ -49,7 +49,6 @@ goToMenu(){
             <NavigationEvents onDidBlur={payload =>  this.refs._scrollView.scrollTo({y: 0,x:0,animated: true})} />
             <StatusBar translucent backgroundColor="black" />
 
-            <SettingBar onClick={this.goToMenu} margin={30}></SettingBar>
 
             <View style={[styles.header,styles.shadow]}>
                 <AudioWave style={styles.waveform} color='#ababab' playing={this.props.isPlaying}></AudioWave>
@@ -58,13 +57,21 @@ goToMenu(){
                   <TouchableOpacity style={styles.pauseBtn} onPressIn={this.handlePressIn.bind(this)} onPressOut={this.handlePressOut.bind(this)} onPress={this.props.togglePlay}>
                     {this.props.isPlaying ?
                       <AnimatedFeather name="pause"  style={[{fontSize:animatedHeight}]}/>
-                    :
+                      :
                       <AnimatedFeather name="play"  style={[{fontSize:animatedHeight},{marginLeft: 4}]}/>
                     }
                   </TouchableOpacity>
             
                 <Text style={[{color: 'grey'},{fontWeight: 'bold'},{marginTop:90}]}>Leaderboard :</Text>
+            
+            
             </View>
+            
+            
+            
+            <SettingBar screenProps={this.props} onClick={this.goToMenu} margin={30}></SettingBar>
+            
+            
             <ScrollView ref='_scrollView' showsVerticalScrollIndicator={false} style={styles.scroll} >
 
               <UsersArray />

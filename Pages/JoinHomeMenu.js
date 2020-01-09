@@ -4,11 +4,12 @@ import PlayListElement from "../Components/PlaylistItem";
 import AudioWave from "../Components/Audiowave";
 import RateBar from "../Components/RateBar";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
+import {connect} from 'react-redux'
 
-export default class JoinHomeMenu extends Component {
+class JoinHomeMenu extends Component {
   state = {
-    partyText: "",
-    username: "",
+    partyText: "aaaa",
+    username: "aaaa",
     loading: false
   }
 
@@ -25,15 +26,17 @@ export default class JoinHomeMenu extends Component {
   }
 
   joinParty() {
-    this.setState({
-      loading: true
-    })
+    this.props.socketDisconnect();
+    // this.setState({
+      //   loading: true
+      // })
   }
-
+    
   createParty() {
-    this.setState({
-      loading: true
-    })
+    this.props.socketConnect(this.state.username);
+    // this.setState({
+    //   loading: true
+    // })
     //console.log(this.state.partyText + " - " + this.state.username)
   }
 
@@ -73,6 +76,28 @@ export default class JoinHomeMenu extends Component {
  
  
 }
+
+// const mapStateToProps = state => {
+//   return {
+//     isPlaying: state.isPlaying,
+//     title: state.title,
+//     likes: state.likes,
+//     dislikes: state.dislikes,
+//     connectedUsers: state.connectedUsers,
+//     socketUserId: state.socketUserId
+//   }
+// }
+
+const mapDispatchToProps = dispatch => {
+  return {
+    socketConnect: (user) => dispatch({ type: 'S_CONNECT', user }),
+    socketDisconnect: () => dispatch({ type: 'S_DISCONNECT' }),
+    // userJoin: (user) => dispatch({ type: 'SOCKET_USER_JOIN', user }),
+    // userLeft: (user) => dispatch({ type: 'SOCKET_USER_LEFT', user })
+  }
+}
+
+export default connect(null, mapDispatchToProps)(JoinHomeMenu)
 
 const styles = StyleSheet.create({
   inputBtnContainer: {

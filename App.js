@@ -7,8 +7,10 @@ import { createMaterialTopTabNavigator } from "react-navigation-tabs";
 import {AntDesign,MaterialCommunityIcons,MaterialIcons} from "@expo/vector-icons";
 import LeaderBoard from './Pages/Leaderboard';
 import { Provider, connect } from 'react-redux';
-import { createStore } from 'redux';
-
+import { createStore, applyMiddleware } from 'redux';
+import socketMiddleware from "./redux-middleware";
+import { createStackNavigator } from 'react-navigation-stack';
+import TabNavig from './TabNavigScene.js'
 
 const initialState = {
   isPlaying: false,
@@ -74,71 +76,47 @@ const reducer = (state = initialState, action) => {
   }
 };
 
-const store = createStore(reducer);
+const store = createStore(reducer, applyMiddleware(socketMiddleware));
 
 export default class App extends React.Component {
+  static navigationOptions = {
+      header: null
+  }
   render() {
+    
     return (
       <Provider store={store}>
-        <Navigation />
+        <StackNav />
         
       </Provider>
     );
   }
 }
-
-const TabNavigator = createMaterialTopTabNavigator({
-    MainMenuPage: {
+const AppNavigator = createStackNavigator({
+  Tabs:{
+    screen: TabNavig,
+    navigationOptions: {
+      headerShown: false,
+    }
+  },
+  Home: {
     screen: JoinHomeMenu,
     navigationOptions: {
-      tabBarIcon: () => (
-        <MaterialIcons name="do-not-disturb" size={25} color="red" style={{width: 30}} />
-        )
-      },
-    },
-    LeaderBoardPage: {
-    screen: LeaderBoard,
-    navigationOptions: {
-      tabBarIcon: () => (
-        <AntDesign name="bars" size={25} color="white" style={{width: 30}} />
-        )
-      },
-    },
-    PartyPage: {
-      screen: PartyClient,
-      navigationOptions: {
-        tabBarIcon: () => (
-          <AntDesign name="hearto" size={25} color="white" style={{width: 60}} />
-          )
-        },
-      },
-    SearchPage: {
-      screen: SearchSong,
-      navigationOptions: {
-        tabBarIcon: () => (
-          <MaterialCommunityIcons name="playlist-plus" size={30} color="white" style={{width: 30}} />
-          )
-        }
-      },
-    },
-    {
-      order: ['MainMenuPage','LeaderBoardPage','PartyPage', 'SearchPage'],
-      tabBarPosition: 'bottom',
-      initialRouteName: 'PartyPage',
-      tabBarOptions: {
-        activeTintColor: '#D4AF37',
-        inactiveTintColor: 'gray',
-        showLabel: false,
-        showIcon: true,
-        indicatorStyle: {
-          backgroundColor: '#ee4540'
-        },
-        style: {
-          backgroundColor: '#1a1a1a',
-        }
-      },
-    },
-    )
-      
-    let Navigation = createAppContainer(TabNavigator);
+      headerShown: false,
+    }
+  },
+});
+
+const StackNav = createAppContainer(AppNavigator);
+
+
+
+// const Stack = createStackNavigator({
+//   tab: TabNavigator,
+//   otherScreen: JoinHomeMenu,
+// })
+
+// export default TabNavigator;
+
+
       
