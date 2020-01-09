@@ -24,7 +24,8 @@ class PartyClient extends Component {
   }
   
   connectToBackend() {
-    console.log("connectToBackend")
+    // console.log("\u001b[1;31m Red message");
+    /*console.log("connectToBackend")
     let tmpid = Math.floor(Math.random() * 1000000).toString();
     this.socket = socketIOClient("http://173.212.236.123:8888", {forceNode: true})
     this.props.socketConnect(tmpid)
@@ -77,7 +78,7 @@ class PartyClient extends Component {
     this.props.userLeft(this.props.socketUserId);
     this.setState({
       connected: false
-    })
+    })*/
   }
     
   render(){

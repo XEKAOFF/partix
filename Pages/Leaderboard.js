@@ -4,7 +4,6 @@ import LeaderBoardItem from "../Components/LeaderBoardItem";
 import AudioWave from "../Components/Audiowave";
 import RateBar from "../Components/RateBar";
 import {Entypo,Feather} from "@expo/vector-icons";
-import '../global';
 import {connect} from 'react-redux'
 import SettingBar from '../Components/SettingBar';
 import UsersArray from '../Components/UsersArray';
