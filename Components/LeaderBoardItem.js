@@ -79,7 +79,7 @@ export default class LeaderBoardItem extends React.Component {
 const styles = StyleSheet.create({
   
   container:{
-    margin: 10,
+    margin: 0,
     marginBottom: 30,
     width: 250,
     height: 60,
@@ -89,10 +89,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
     justifyContent: 'center',
- 
-   
-    
-   
   },
   userInfo:{
     alignItems: 'center',
@@ -106,7 +102,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'black',
     fontSize: 18,
-    
   },
   userIndex:{
     marginLeft: 30,
@@ -115,14 +110,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'black',
     fontWeight: 'bold',
-
   },
   userPoints:{
-  
     fontSize: 20,
     color: '#EE4540',
     fontWeight: 'bold',
-
   },
- 
 });

@@ -24,6 +24,11 @@ const initSocketHandlers = (store, socket) => {
         console.log("JOIN " + user)
         store.dispatch({ type: 'SOCKET_USER_JOIN', user })
     })
+
+    socket.on('already exist', () => {
+        store.dispatch({ type: 'S_DISCONNECT' })
+        store.dispatch({ type: 'ERROR_PARTYNAME' })
+    })
 }
 
 const socketMiddleware = () => {
@@ -32,7 +37,7 @@ const socketMiddleware = () => {
     return store => next => action => {
         switch (action.type) {
         case 'S_CONNECT':
-            if(action.user == undefined) {
+            if(action.data.user == undefined) {
                 console.error('Socket Error: no username provided')
                 break
             }
@@ -50,8 +55,13 @@ const socketMiddleware = () => {
                 username: user
             })
 
-            socket.emit('join', action.data.room)
-            
+            console.log(action.data.type)
+            if(action.data.type == 'create') {
+                socket.emit('create', action.data.room)
+            } else if (action.data.type == 'join') {
+                socket.emit('join', action.data.room)
+            }
+
             store.dispatch({ type: 'SOCKET_USER_JOIN', user })
             // // websocket handlers
             // socket.onmessage = onMessage(store)

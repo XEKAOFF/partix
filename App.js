@@ -11,6 +11,8 @@ import { createStore, applyMiddleware } from 'redux';
 import socketMiddleware from "./redux-middleware";
 import { createStackNavigator } from 'react-navigation-stack';
 import TabNavig from './TabNavigScene.js'
+import NavigationService from './NavigationService';
+import SettingsPage from './Pages/SettingsPage';
 
 const initialState = {
   isPlaying: false,
@@ -20,7 +22,8 @@ const initialState = {
   liked:false,
   disliked:false,
   userToken: null,
-  connectedUsers: []
+  connectedUsers: [],
+  errorPartyName: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -65,6 +68,12 @@ const reducer = (state = initialState, action) => {
             ...state,
             connectedUsers: state.connectedUsers.filter(item => item !== action.user)
         }
+    case 'ERROR_PARTYNAME':
+        return {
+            ...state,
+            errorPartyName: !state.errorPartyName
+        }
+
     default:
         return state
   }
@@ -80,25 +89,28 @@ export default class App extends React.Component {
         
     return (
         <Provider store={store}>
-            <StackNav />
+            <StackNav 
+              ref={navigatorRef => {
+                NavigationService.setTopLevelNavigator(navigatorRef);
+            }} />
             
         </Provider>
         );
     }
 }
 const AppNavigator = createStackNavigator({
-    Tabs:{
-            screen: TabNavig,
-            navigationOptions: {
-            headerShown: false,
-        }
+    Home: JoinHomeMenu,
+    Tabs: TabNavig,
+    Settings: { screen: SettingsPage,
+                navigationOptions: {
+                    headerShown: true
+                }
     },
-    Home: {
-            screen: JoinHomeMenu,
-            navigationOptions: {
-            headerShown: false,
-        }
-    },
+},
+{
+    defaultNavigationOptions: {
+        headerShown: false
+    }
 });
 
 const StackNav = createAppContainer(AppNavigator);

@@ -1,49 +1,76 @@
 import React, {Component} from 'react';
 import { StyleSheet,TouchableOpacity,StatusBar,TextInput , Text, View } from 'react-native';
 import PlayListElement from "../Components/PlaylistItem";
+import { NavigationActions } from "react-navigation";
 import AudioWave from "../Components/Audiowave";
 import RateBar from "../Components/RateBar";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
 import {connect} from 'react-redux'
+import SettingBar from '../Components/SettingBar';
+
+const regex = RegExp('^[a-zA-Z0-9]+(?:[_-]?[a-zA-Z0-9])*$')
 
 class JoinHomeMenu extends Component {
   state = {
-    partyText: "aaaa",
-    username: "aaaa",
-    loading: false
+    partyText: "",
+    username: "",
+    loading: false,
+    goodToLaunch: false
   }
 
   updateText(text) {
     this.setState({
       partyText: text
     })
+    this.updateCondition()
   }
 
   updateUsername(text) {
     this.setState({
       username: text
     })
+    this.updateCondition()
+  }
+
+  updateCondition() {
+    if(this.state.username.length >= 3&&regex.test(this.state.username)&&this.state.partyText.length >= 3) {
+      // console.log("yes")
+      this.setState({
+        goodToLaunch: true
+      })
+    } else {
+      // console.log("no")
+      this.setState({
+        goodToLaunch: false
+      })
+    }
   }
 
   joinParty() {
-    this.props.socketDisconnect();
+    this.props.socketConnect({user: this.state.username, room: this.state.partyText, type: 'join'});
+    this.props.navigation.navigate('Tabs', {}, NavigationActions.navigate({routeName: 'PartyPage'}))
     // this.setState({
       //   loading: true
       // })
   }
     
   createParty() {
-    this.props.socketConnect({user: this.state.username, room: this.state.partyText});
+    this.props.socketConnect({user: this.state.username, room: this.state.partyText, type: 'create'});
+    this.props.navigation.navigate('Tabs', {}, NavigationActions.navigate({routeName: 'PartyPage'}))
     // this.setState({
-    //   loading: true
-    // })
-    //console.log(this.state.partyText + " - " + this.state.username)
+      //   loading: true
+      // })
+      //console.log(this.state.partyText + " - " + this.state.username)
   }
-
+    
+  switchNav() {
+    this.props.navigation.navigate('Tabs', {}, NavigationActions.navigate({routeName: 'PartyPage'}))
+  }
   render(){
     return (
     
         <View style={styles.container}>
+          <SettingBar onlySettings={true} margin={30}></SettingBar>
           <View style={styles.fixedAudiowaves}>
             <View style={[styles.audioBar,{height:8}]}></View>
             <View style={[styles.audioBar,{height:25}]}></View>
@@ -53,18 +80,19 @@ class JoinHomeMenu extends Component {
           </View>
         <StatusBar barStyle="dark-content" />
         <View style={styles.header}>
-            <Text style={styles.appTitle}>{this.state.partyText}</Text>
+            <Text style={styles.appTitle}>Partix</Text>
         </View>
         <View style={styles.middleSlot}>
             <TextInput onChangeText={newtext => this.updateUsername(newtext)} placeholderTextColor='grey' placeholder='Username' style={styles.field}></TextInput>
         </View>
         { !this.state.loading ?
         <View style={{flex: 0.7, justifyContent:'space-evenly',alignItems: 'center'}}>
-          <TextInput onChangeText={newtext => this.updateText(newtext)} placeholderTextColor='grey' placeholder='Party Name' style={styles.partyfield}></TextInput>
+          <TextInput onChangeText={newtext => this.updateText(newtext)} placeholderTextColor='grey' placeholder='Party Name' style={(!this.props.errorPartyName) ? [styles.partyfield] : [styles.partyfield, {backgroundColor: 'red'}]}></TextInput>
           <View style={styles.inputBtnContainer}>
-            <TouchableOpacity onPress={this.createParty.bind(this)} disabled={(this.state.partyText.length < 3 || this.state.username.length < 3)} style={(this.state.partyText.length < 3  || this.state.username.length < 3) ? {...styles.menuBtn, ...styles.buttonDisabled} : styles.menuBtn}><Text style={styles.menuBtnText}>Create</Text></TouchableOpacity>
-            <TouchableOpacity onPress={this.joinParty.bind(this)} disabled={(this.state.partyText.length < 3  || this.state.username.length < 3)} style={(this.state.partyText.length < 3  || this.state.username.length < 3) ? {...styles.menuBtn, ...styles.buttonDisabled} : styles.menuBtn}><Text style={styles.menuBtnText}>Join</Text></TouchableOpacity>
+            <TouchableOpacity onPress={this.createParty.bind(this)} disabled={!this.state.goodToLaunch} style={!this.state.goodToLaunch ? {...styles.menuBtn, ...styles.buttonDisabled} : styles.menuBtn}><Text style={styles.menuBtnText}>Create</Text></TouchableOpacity>
+            <TouchableOpacity onPress={this.joinParty.bind(this)} disabled={!this.state.goodToLaunch} style={!this.state.goodToLaunch ? {...styles.menuBtn, ...styles.buttonDisabled} : styles.menuBtn}><Text style={styles.menuBtnText}>Join</Text></TouchableOpacity>
           </View>
+            <TouchableOpacity onPress={this.switchNav.bind(this)} style={!this.state.goodToLaunch ? {...styles.menuBtn, ...styles.buttonDisabled} : styles.menuBtn}><Text style={styles.menuBtnText}>DevDoor</Text></TouchableOpacity>
         </View> :
         <View>
           <Text>Loading</Text>
@@ -88,16 +116,23 @@ class JoinHomeMenu extends Component {
 //   }
 // }
 
+function mapStateToProps(state) {
+  return {
+    errorPartyName: state.errorPartyName
+  }
+}
+
 const mapDispatchToProps = dispatch => {
   return {
     socketConnect: (data) => dispatch({ type: 'S_CONNECT', data }),
     socketDisconnect: () => dispatch({ type: 'S_DISCONNECT' }),
+    errorToggle: () => dispatch({ type: 'ERROR_PARTYNAME' }),
     // userJoin: (user) => dispatch({ type: 'SOCKET_USER_JOIN', user }),
     // userLeft: (user) => dispatch({ type: 'SOCKET_USER_LEFT', user })
   }
 }
 
-export default connect(null, mapDispatchToProps)(JoinHomeMenu)
+export default connect(mapStateToProps, mapDispatchToProps)(JoinHomeMenu)
 
 const styles = StyleSheet.create({
   inputBtnContainer: {

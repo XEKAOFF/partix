@@ -94,7 +94,7 @@ export default class AudioWave extends React.Component {
         }
     }
 
-    UNSAFE_componentWillMount(){
+    componentDidMount(){
         if(this.props.playing) {
             this.startAnimation1();
             this.startAnimation2();

@@ -10,16 +10,15 @@ import { Provider, connect } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import socketMiddleware from "./redux-middleware";
 import { createStackNavigator } from 'react-navigation-stack';
+import NavigationService from './NavigationService';
 
-
-
-export default class TabNavig extends Component {
-    render() {
-        return (
-            <Navigation/>
-        );
-    }
-}
+// export default class TabNavig extends Component {
+//     render() {
+//         return (
+//             <Navigation/>
+//         );
+//     }
+// }
 const TabNavigator = createMaterialTopTabNavigator({
     MainMenuPage: {
     screen: JoinHomeMenu,
@@ -55,7 +54,8 @@ const TabNavigator = createMaterialTopTabNavigator({
       },
     },
     {
-      order: ['MainMenuPage','LeaderBoardPage','PartyPage', 'SearchPage'],
+      // order: ['MainMenuPage','LeaderBoardPage','PartyPage', 'SearchPage'],
+      order: ['LeaderBoardPage','PartyPage', 'SearchPage'],
       tabBarPosition: 'bottom',
       initialRouteName: 'PartyPage',
       tabBarOptions: {
@@ -73,4 +73,4 @@ const TabNavigator = createMaterialTopTabNavigator({
     },
     )
       
-    let Navigation = createAppContainer(TabNavigator);
+export default Navigation = createAppContainer(TabNavigator);

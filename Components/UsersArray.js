@@ -8,7 +8,7 @@ class UsersArray extends Component {
     render() {
         let users = this.props.connectedUsers;
         if (!Array.isArray(users) || users === undefined || users.length == 0) {
-            return <Text>No users connected</Text>
+            return <Text style={[{marginTop:15},{color:'white'},{backgroundColor: 'blue'}]}>No users connected</Text>
         } else {
             var elems = users.map((obj, index) => {
                 return <LeaderBoardItem key={index} userName={obj} points={666}></LeaderBoardItem>

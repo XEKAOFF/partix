@@ -33,11 +33,6 @@ handlePressOut = () => {
 }).start()
 };
 
-goToMenu(){
-  console.log('menu');
-  this.props.navigation.navigate('PartyPage');
-}
-
   render(){
     
     const animatedHeight = this.state.animation.interpolate({
@@ -48,43 +43,28 @@ goToMenu(){
         <View style={styles.container}>
             <NavigationEvents onDidBlur={payload =>  this.refs._scrollView.scrollTo({y: 0,x:0,animated: true})} />
             <StatusBar translucent backgroundColor="black" />
-
+            
+            <SettingBar margin={30}></SettingBar>
+            
+            <ScrollView ref='_scrollView' showsVerticalScrollIndicator={false} style={styles.scroll} >
 
             <View style={[styles.header,styles.shadow]}>
                 <AudioWave style={styles.waveform} color='#ababab' playing={this.props.isPlaying}></AudioWave>
                 <Text style={styles.currentMusic}>{this.props.title}</Text>
         
-                  <TouchableOpacity style={styles.pauseBtn} onPressIn={this.handlePressIn.bind(this)} onPressOut={this.handlePressOut.bind(this)} onPress={this.props.togglePlay}>
-                    {this.props.isPlaying ?
-                      <AnimatedFeather name="pause"  style={[{fontSize:animatedHeight}]}/>
-                      :
-                      <AnimatedFeather name="play"  style={[{fontSize:animatedHeight},{marginLeft: 4}]}/>
-                    }
-                  </TouchableOpacity>
+                <TouchableOpacity style={styles.pauseBtn} onPressIn={this.handlePressIn.bind(this)} onPressOut={this.handlePressOut.bind(this)} onPress={this.props.togglePlay}>
+                  {this.props.isPlaying ?
+                    <AnimatedFeather name="pause"  style={[{fontSize:animatedHeight}]}/>
+                  :
+                    <AnimatedFeather name="play"  style={[{fontSize:animatedHeight},{marginLeft: 4}]}/>
+                  }
+                </TouchableOpacity>
             
-                <Text style={[{color: 'grey'},{fontWeight: 'bold'},{marginTop:90}]}>Leaderboard :</Text>
-            
-            
+                <Text style={[{color: 'grey'},{fontWeight: 'bold'},{marginTop:20}]}>Leaderboard :</Text>
             </View>
             
-            
-            
-            <SettingBar screenProps={this.props} onClick={this.goToMenu} margin={30}></SettingBar>
-            
-            
-            <ScrollView ref='_scrollView' showsVerticalScrollIndicator={false} style={styles.scroll} >
-
-              <UsersArray />
-              {/* <LeaderBoardItem userName='Kraxkan' points={356}></LeaderBoardItem>
-              <LeaderBoardItem userName='Célian' points={320}></LeaderBoardItem>
-              <LeaderBoardItem userName='Kraxkan' points={356}></LeaderBoardItem>
-              <LeaderBoardItem userName='Célian' points={320}></LeaderBoardItem>
-              <LeaderBoardItem userName='Kraxkan' points={356}></LeaderBoardItem>
-              <LeaderBoardItem userName='Célian' points={320}></LeaderBoardItem>
-              <LeaderBoardItem userName='Kraxkan' points={356}></LeaderBoardItem>
-              <LeaderBoardItem userName='Célian' points={320}></LeaderBoardItem>
-              <LeaderBoardItem userName='Jean-Charles' points={245}></LeaderBoardItem>
-              <LeaderBoardItem userName='Anonymousse a raser' points={98}></LeaderBoardItem> */}
+            <UsersArray></UsersArray>
+          
             </ScrollView>
            
         </View>
@@ -123,7 +103,6 @@ const styles = StyleSheet.create({
     
       },
       header: {
-        height: '30%',
         alignItems : 'center',
       },
       container: {
@@ -141,15 +120,13 @@ const styles = StyleSheet.create({
       currentMusic:{
         color : 'black',
         fontWeight : 'bold',
-        marginTop: 65,
+        marginTop: 10,
         fontSize: 15,
       },
       waveform:{
-          position: 'absolute',
-          marginTop: 20,
+          marginTop: 25,
       },
       pauseBtn:{
-        position: 'absolute',
-        marginTop: 100,
+        marginTop: 35,
       },  
 });
