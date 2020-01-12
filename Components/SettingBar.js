@@ -28,14 +28,14 @@ class SettingBar extends Component {
     }
     onQuit(){
         Alert.alert(
-            'Hey there !',
-            'Do you really want to leave this party ?',
+            'Leave the party',
+            '',
             [
-              {text: 'Yes sure !', 
+              {text: 'Leave', 
               onPress: () => this.returnToHome(),
               style:'destructive'},
               {
-                text: 'No !',
+                text: 'Cancel',
                 onPress: () => console.log('Cancel Pressed'),
                 style: 'cancel',
               },

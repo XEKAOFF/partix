@@ -83,7 +83,7 @@ class SearchSong extends Component {
     
     const newSongs = await search({
       offset: 0,
-      limit: 5,
+      limit: 10,
       q: query,
       token,
     });
@@ -102,6 +102,7 @@ class SearchSong extends Component {
   }
 
   handleSearchChange(text) {
+    console.log(this.props);
     if(text == '') {
       return;
     }
@@ -134,7 +135,7 @@ class SearchSong extends Component {
             <NavigationEvents onDidBlur={payload =>  this.refs._scrollView.scrollTo({y: 0,x:0,animated: true})} />
             <View style={[styles.header,styles.shadow]}>
                 <AudioWave style={styles.waveform} color='#ababab' playing={this.props.isPlaying}></AudioWave>
-                <Text style={styles.currentMusic}>{this.props.userToken}</Text>
+                <Text style={styles.currentMusic}>{this.props.title}</Text>
             </View>
             
             <View style={[styles.bottomSlot]}>
@@ -147,7 +148,11 @@ class SearchSong extends Component {
                 selectionColor= 'orange'
                 ></TextInput>
                 {this.state.result ? <Text style={{color: 'white'}}>{JSON.stringify(this.state.result)}</Text> : null}
-                <TouchableOpacity style={{backgroundColor: 'red'}} onPress={this.connectToSpotify}><Text>CONNECT</Text></TouchableOpacity>
+
+                {!this.props.userToken ?
+                <TouchableOpacity style={styles.spotifyBtn} onPress={this.connectToSpotify}><Text style={styles.spotifyTxt}>Connect to your spotify account</Text></TouchableOpacity>
+                : <View></View>}
+
                 <ScrollView ref='_scrollView' contentContainerStyle={[{flexGrow : 1,alignItems: 'center'}]}>
                     {(this.state.isEmpty) ? 
                       <Text style={styles.resultText}></Text>
@@ -243,4 +248,17 @@ const styles = StyleSheet.create({
         fontSize: 15,
         marginTop: 10,
     },
+    spotifyBtn:{
+        marginTop: 60,
+        width: 150,
+        height: 45,
+        backgroundColor: '#EE4540',
+        borderRadius: 25,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    spotifyTxt:{
+      color: 'white',
+      fontWeight: 'bold',
+  }
 });

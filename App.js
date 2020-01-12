@@ -16,7 +16,7 @@ import SettingsPage from './Pages/SettingsPage';
 
 const initialState = {
   isPlaying: false,
-  title: 'IC3PEAK - Ether',
+  title: 'Je ne regrette rien - Edith Piaf',
   likes:6,
   dislikes:9,
   liked:false,
